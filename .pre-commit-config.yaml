@@ -1,0 +1,53 @@
+repos:
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v4.4.0
+    hooks:
+      - id: end-of-file-fixer
+      - id: check-merge-conflict
+      - id: trailing-whitespace
+      - id: check-ast
+      - id: check-yaml
+      - id: detect-private-key
+      - id: check-added-large-files
+      - id: requirements-txt-fixer
+
+  - repo: https://github.com/PyCQA/autoflake
+    rev: v2.1.1
+    hooks:
+      - id: autoflake
+        name: Remove unused imports and variables.
+        args:
+          [
+            "--in-place",
+            "--remove-all-unused-imports",
+            "--remove-unused-variables",
+            "--expand-star-imports",
+            "--ignore-init-module-imports",
+          ]
+        language_version: python3
+
+
+  - repo: https://github.com/PyCQA/isort
+    rev: 5.12.0
+    hooks:
+      - id: isort
+        name: Sorting import statements.
+        language_version: python3
+
+
+  - repo: https://github.com/python/black.git
+    rev: 23.3.0
+    hooks:
+      - id: black
+        name: Black pyton code formatting.
+        language_version: python3
+
+
+  - repo: https://github.com/pycqa/flake8
+    rev: 6.0.0
+    hooks:
+      - id: flake8
+        name: Check for various issues not covered by black
+        additional_dependencies:
+          - flake8-black>=0.1.1
+        language_version: python3
