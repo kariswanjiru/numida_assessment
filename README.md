@@ -54,7 +54,6 @@ Take away assignment for Machine Learning Engineer.
 ```
 
 --------
-# Business-dashboard
 
 
 ## Table of contents
