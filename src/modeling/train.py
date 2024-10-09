@@ -1,30 +1,54 @@
+# loading libraries and packages
+import pickle
 from pathlib import Path
 
-import typer
-from loguru import logger
-from tqdm import tqdm
+import click
+import pandas as pd
+from sklearn.ensemble import RandomForestClassifier
+from sklearn.metrics import balanced_accuracy_score, recall_score
 
-from src.config import MODELS_DIR, PROCESSED_DATA_DIR
+from src.config import MODELS_DIR
+from src.utils import get_logger
 
-app = typer.Typer()
+# logging.
+logger = get_logger("Train Machine Learning Model")
 
 
-@app.command()
+@click.command()
+@click.argument("prepocessed_path", type=click.Path(exists=True))
+@click.argument("test_preprocessed_path", type=click.Path(exists=True))
 def main(
-    # ---- REPLACE DEFAULT PATHS AS APPROPRIATE ----
-    features_path: Path = PROCESSED_DATA_DIR / "features.csv",
-    labels_path: Path = PROCESSED_DATA_DIR / "labels.csv",
-    model_path: Path = MODELS_DIR / "model.pkl",
-    # -----------------------------------------
+    prepocessed_path,
+    test_preprocessed_path,
+    model_path: Path = MODELS_DIR / "rf_model.pkl",
 ):
-    # ---- REPLACE THIS WITH YOUR OWN CODE ----
     logger.info("Training some model...")
-    for i in tqdm(range(10), total=10):
-        if i == 5:
-            logger.info("Something happened for iteration 5.")
-    logger.success("Modeling training complete.")
-    # -----------------------------------------
+    loan = pd.read_csv(prepocessed_path)
+
+    test = pd.read_csv(test_preprocessed_path)
+
+    # Data targets
+    features = loan.drop("approval_status", axis=1)
+    target = loan["approval_status"]
+
+    # Test target
+    test_features = test.drop("approval_status", axis=1)
+    test_target = test["approval_status"]
+
+    # Update the random forest classifier
+    rf_model = RandomForestClassifier()
+    rf_model.fit(features, target)
+    prediction = rf_model.predict(test_features)
+
+    # Measure Metrics
+    logger.info(balanced_accuracy_score(prediction, test_target))
+    logger.info(recall_score(prediction, test_target, average="micro"))
+
+    # Outputting model.
+    pickle.dump(rf_model, open(model_path, "wb"))
+
+    logger.info("Modeling training complete.")
 
 
 if __name__ == "__main__":
-    app()
+    main()
