@@ -1,29 +1,54 @@
-from pathlib import Path
+import click
+import pandas as pd
 
-import typer
-from loguru import logger
-from tqdm import tqdm
+# data preprocessing
+from src.config import approval_encoder, dismissal_encoder, sector_encoder
+from src.utils import get_logger
 
-from src.config import PROCESSED_DATA_DIR
+# logging.
+logger = get_logger("Features")
 
-app = typer.Typer()
+
+# Feature Engineering Function.
+def feature_engineering(df):
+    df.columns = df.columns.str.strip()
+
+    # pre-processing risk levels to integers.
+    df = approval_encoder.fit_transform(df)
+    df = dismissal_encoder.fit_transform(df)
+    df = sector_encoder.fit_transform(df)
+
+    return df
 
 
-@app.command()
+@click.command()
+@click.argument("input_path", type=click.Path(exists=True))
+@click.argument("output_path", type=click.Path())
 def main(
-    # ---- REPLACE DEFAULT PATHS AS APPROPRIATE ----
-    input_path: Path = PROCESSED_DATA_DIR / "dataset.csv",
-    output_path: Path = PROCESSED_DATA_DIR / "features.csv",
-    # -----------------------------------------
+    input_path,
+    output_path,
 ):
-    # ---- REPLACE THIS WITH YOUR OWN CODE ----
     logger.info("Generating features from dataset...")
-    for i in tqdm(range(10), total=10):
-        if i == 5:
-            logger.info("Something happened for iteration 5.")
+    data = pd.read_csv(input_path)
+
+    # Categorical Values.
+    data = feature_engineering(data)
+
+    # Binary Values.
+    data["paid_late"] = data["paid_late"].replace({False: 0, True: 1})
+
+    # Drop Columns.
+    data = data.drop(
+        columns=[
+            "credit_officer_id",
+            "acquisition_channel",
+            "employee_count",
+        ]
+    )
+
     logger.success("Features generation complete.")
-    # -----------------------------------------
+    data.to_csv(output_path, index=False)
 
 
 if __name__ == "__main__":
-    app()
+    main()
