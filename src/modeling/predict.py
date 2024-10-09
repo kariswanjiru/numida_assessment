@@ -1,17 +1,19 @@
 import pickle
-from pathlib import Path
 
 import click
 import pandas as pd
 
-from src.config import MODELS_DIR
 from src.utils import get_logger
+
+# from pathlib import Path
+# from src.config import MODELS_DIR
 
 # logging.
 logger = get_logger("Predict")
 
 
-url: Path = MODELS_DIR / "rf_model.pkl"
+# url: Path = MODELS_DIR / "rf_model.pkl"
+url = "model/rf_model.pk"
 model = pickle.load(open(url, "rb"))
 
 

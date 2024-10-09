@@ -1,14 +1,15 @@
 # loading libraries and packages
 import pickle
-from pathlib import Path
 
 import click
 import pandas as pd
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.metrics import balanced_accuracy_score, recall_score
 
-from src.config import MODELS_DIR
 from src.utils import get_logger
+
+# from pathlib import Path
+# from src.config import MODELS_DIR
 
 # logging.
 logger = get_logger("Train Machine Learning Model")
@@ -20,7 +21,7 @@ logger = get_logger("Train Machine Learning Model")
 def main(
     prepocessed_path,
     test_preprocessed_path,
-    model_path: Path = MODELS_DIR / "rf_model.pkl",
+    # TODO: add to function. model_path: Path = MODELS_DIR / "rf_model.pkl",
 ):
     logger.info("Training some model...")
     loan = pd.read_csv(prepocessed_path)
@@ -45,6 +46,7 @@ def main(
     logger.info(recall_score(prediction, test_target, average="micro"))
 
     # Outputting model.
+    model_path = "model/rf_model.pkl"
     pickle.dump(rf_model, open(model_path, "wb"))
 
     logger.info("Modeling training complete.")
