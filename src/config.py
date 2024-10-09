@@ -96,16 +96,16 @@ approval_encoder = OrdinalEncoder(
     mapping=[
         {
             "col": "approval_status",
-            "mapping": {"Approved": 1, "Declined": 2, "Cancelled": 3, "Expired": 4},
+            "mapping": {"Approved": 0, "Declined": 1, "Cancelled": 2, "Expired": 3},
         }
     ],
 )
 
 
-# try:
-#     from tqdm import tqdm
+try:
+    from tqdm import tqdm
 
-#     logger.remove(0)
-#     logger.add(lambda msg: tqdm.write(msg, end=""), colorize=True)
-# except ModuleNotFoundError:
-#     pass
+    logger.remove(0)
+    logger.add(lambda msg: tqdm.write(msg, end=""), colorize=True)
+except ModuleNotFoundError:
+    pass
