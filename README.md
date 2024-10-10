@@ -73,7 +73,7 @@ Take away assignment for Machine Learning Engineer.
 
 ### The challenge
 
-This is the solution to the Numida assemement. The data file wasn't added to the repository. The dataset train_loan_data.csv, train_payment_data.csv and test_loan_data.csv are all added to the raw data folde as shown above.
+This is the solution to the Numida assemement. The data file wasn't added to the repository. The dataset train_loan_data.csv, train_payment_data.csv and test_loan_data.csv are all added to the raw data folder as shown above.
 
 ### Commands
 #### Steps to follow.
